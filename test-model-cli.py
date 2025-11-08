@@ -68,7 +68,7 @@ def predict_video(video_path):
 
 # [MAIN] MAIN EXECUTION
 if __name__ == "__main__":
-    video_path = "v.mp4"  # replace with your local test video
+    video_path = "test-video.mp4"  # replace with your local test video
     if not os.path.exists(video_path):
         raise FileNotFound(f"[ERROR] Video not found: {video_path}")
 

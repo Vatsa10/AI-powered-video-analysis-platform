@@ -4,9 +4,10 @@ This project demonstrates a **Deep Learning-based video analysis system** capabl
 - Detecting **violence** in real-life video footage.
 - Detecting **anomalies** or abnormal motion patterns.
 
-The project uses **two neural network models**:
-1. **X3D (Action Recognition)** → Detects violence or aggressive behavior.  
-2. **ConvLSTM Autoencoder** → Detects anomalies based on frame reconstruction error.
+The project uses **multiple deep learning models**:
+1. **MobileNet + BiLSTM** → High-accuracy violence detection (96% accuracy)  
+2. **X3D (Action Recognition)** → Detects violence or aggressive behavior.  
+3. **ConvLSTM Autoencoder** → Detects anomalies based on frame reconstruction error.
 
 ---
 
@@ -22,6 +23,7 @@ The project uses **two neural network models**:
 
 | Model | Task | Dataset | Input Shape | Framework |
 |-------|------|----------|--------------|------------|
+| **MobileNet + BiLSTM** | Violence Detection | [Real-Life Violence Dataset](https://www.kaggle.com/datasets/mohamedmustafa/real-life-violence-situations-dataset) | (16, 224, 224, 3) | TensorFlow/Keras |
 | X3D-xs | Violence / Action Recognition | Real-Life Violence Dataset (Kaggle) | 3x16x112x112 | PyTorch |
 | ConvLSTM Autoencoder | Anomaly Detection | UCSD Pedestrian Dataset | 10x3x64x64 | PyTorch |
 
@@ -42,6 +44,11 @@ AI-Powered-Video-Analysis/
 │   ├── setup_env.bat                   # Windows environment setup script
 │   ├── setup_env.sh                    # Linux/Mac environment setup script
 │   ├── setup_env.py                    # Cross-platform environment setup script
+│
+├── training scripts/
+│   └── MobileNet + Bi-LSTM.ipynb       # Training notebook for MobileNet+BiLSTM model
+├── test-model-cli.py                   # CLI script for model testing
+├── app.py                              # Flask API and web interface
 │
 ├── models/
 │   ├── x3d_model.py                    # X3D-based Action Recognition Model
@@ -81,6 +88,33 @@ ucsd_anomaly_dataset/
 ```
 
 ---
+
+## Module 1: MobileNet + BiLSTM for Violence Detection
+
+### Model Details
+- **Architecture**: MobileNet (feature extraction) + BiLSTM (temporal modeling)
+- **Accuracy**: 96% on test set
+- **Input**: 16-frame video clips (224x224x3 per frame)
+- **Output**: Binary classification (Violence/Non-Violence)
+
+### Usage
+
+#### Training
+```bash
+# Run the training notebook
+jupyter notebook "training scripts/MobileNet + Bi-LSTM.ipynb"
+```
+
+#### CLI Testing
+```bash
+python test-model-cli.py --video_path path/to/video.mp4
+```
+
+#### Web Interface
+```bash
+python app.py
+# Open http://localhost:5000 in your browser
+```
 
 ## Setup Instructions
 
