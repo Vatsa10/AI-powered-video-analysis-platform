@@ -47,7 +47,7 @@ AI-Powered-Video-Analysis/
 
 ### CLI Testing
 ```bash
-python test-model-cli.py --video_path path/to/video.mp4
+python test-model-cli.py
 ```
 
 ### Web Interface
