@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🎥 Violence Detection AI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f4f6f9; font-family: 'Inter', sans-serif; }
+    .container { margin-top: 50px; }
+    video { width: 100%; border-radius: 10px; margin-top: 20px; }
+    .frame-thumb { width: 160px; border-radius: 8px; margin: 5px; }
+    .violence { color: #e74c3c; font-weight: bold; }
+    .non-violence { color: #2ecc71; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container text-center">
+    <h1>Violence Detection AI System</h1>
+    <p class="text-muted">Upload a video to detect violence and analyze frames.</p>
+
+    <form id="uploadForm" enctype="multipart/form-data" class="mt-4">
+      <input type="file" name="video" accept="video/*" class="form-control mb-3" required>
+      <button type="submit" class="btn btn-primary">Upload & Analyze</button>
+    </form>
+
+    <div id="videoDisplay" class="mt-4"></div>
+    <div id="result" class="mt-4"></div>
+    <div id="frameAnalysis" class="row mt-4 justify-content-center"></div>
+  </div>
+
+  <script>
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      document.getElementById("result").innerHTML = "<p>⏳ Processing video...</p>";
+      document.getElementById("videoDisplay").innerHTML = "";
+      document.getElementById("frameAnalysis").innerHTML = "";
+
+      const res = await fetch("/predict", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (data.error) {
+        document.getElementById("result").innerHTML = `<p class='text-danger'>${data.error}</p>`;
+        return;
+      }
+
+      // Show uploaded video
+      document.getElementById("videoDisplay").innerHTML = `
+        <video controls>
+          <source src="${data.video_path}" type="video/mp4">
+          Your browser does not support HTML video.
+        </video>
+      `;
+
+      // Show overall result
+      const labelClass = data.overall_label === "VIOLENCE" ? "violence" : "non-violence";
+      document.getElementById("result").innerHTML = `
+        <h4>Prediction: <span class="${labelClass}">${data.overall_label}</span></h4>
+        <p>Confidence: ${data.overall_confidence}</p>
+      `;
+
+      // Show frame-by-frame results
+      let framesHTML = "";
+      data.frame_results.forEach((f) => {
+        framesHTML += `
+          <div class="col-auto text-center">
+            <img src="${f.frame_img}" class="frame-thumb">
+            <p class="${f.label === 'VIOLENCE' ? 'violence' : 'non-violence'}">${f.label}</p>
+            <small>${f.confidence}</small>
+          </div>
+        `;
+      });
+      document.getElementById("frameAnalysis").innerHTML = framesHTML;
+    });
+  </script>
+</body>
+</html>
